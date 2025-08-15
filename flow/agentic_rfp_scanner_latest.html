@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic RFP Scanner - AI Agent Orchestration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .logo-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .company-logo {
+            padding: 15px 25px;
+            background: linear-gradient(45deg, #ff6b35, #ff8e53);
+            color: white;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .company-logo:hover {
+            transform: translateY(-5px);
+        }
+
+        .company-logo.eclatec {
+            background: linear-gradient(45deg, #4a90e2, #6ba3f5);
+            box-shadow: 0 8px 20px rgba(74, 144, 226, 0.3);
+        }
+
+        h1 {
+            color: #1e3c72;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .upload-section, .agent-orchestration {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-area {
+            border: 3px dashed #4a90e2;
+            border-radius: 15px;
+            padding: 30px 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #f8fafc 0%, #e3f2fd 100%);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .upload-area:hover {
+            border-color: #ff6b35;
+            background: linear-gradient(135deg, #fff5f0 0%, #ffe3d4 100%);
+            transform: translateY(-2px);
+        }
+
+        .upload-area.dragover {
+            border-color: #ff6b35;
+            background: linear-gradient(135deg, #fff5f0 0%, #ffe3d4 100%);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 36px;
+            color: #4a90e2;
+            margin-bottom: 15px;
+        }
+
+        .upload-types {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .upload-type {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .upload-type.rfp {
+            background: linear-gradient(45deg, #dc3545, #e57373);
+            color: white;
+        }
+
+        .upload-type.reference {
+            background: linear-gradient(45deg, #28a745, #66bb6a);
+            color: white;
+        }
+
+        .upload-type.active {
+            box-shadow: 0 0 0 2px white, 0 0 0 4px currentColor;
+        }
+
+        .company-selector {
+            margin-bottom: 20px;
+        }
+
+        .company-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .company-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            line-height: 1.3;
+            min-height: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .company-btn.orange {
+            background: linear-gradient(45deg, #ff6b35, #ff8e53);
+            color: white;
+        }
+
+        .company-btn.eclatec {
+            background: linear-gradient(45deg, #4a90e2, #6ba3f5);
+            color: white;
+        }
+
+        .company-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .company-btn.active {
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3), 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .analyze-btn {
+            background: linear-gradient(45deg, #28a745, #34ce57);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .analyze-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(40, 167, 69, 0.4);
+        }
+
+        .analyze-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .section-header {
+            font-size: 1.3em;
+            color: #1e3c72;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid #4a90e2;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .agent-preview {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 2px dashed #dee2e6;
+            text-align: center;
+        }
+
+        .agent-preview.active {
+            border-style: solid;
+            border-color: #28a745;
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f9f0 100%);
+        }
+
+        .agents-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+            display: none;
+        }
+
+        .agents-container.visible {
+            display: block;
+            animation: slideInUp 0.6s ease;
+        }
+
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .agent-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #4a90e2;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .agent-card.working {
+            border-left-color: #ffc107;
+            background: linear-gradient(135deg, #fff9e6 0%, #fffbf0 100%);
+        }
+
+        .agent-card.completed {
+            border-left-color: #28a745;
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f9f0 100%);
+        }
+
+        .agent-card.critical {
+            border-left-color: #dc3545;
+        }
+
+        .agent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .agent-role {
+            font-weight: bold;
+            color: #1e3c72;
+            font-size: 16px;
+        }
+
+        .agent-status {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .agent-status.assigned {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .agent-status.working {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .agent-status.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .agent-status.critical {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .agent-expertise {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .agent-tasks {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 15px;
+        }
+
+        .agent-tasks li {
+            padding: 6px 0;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .task-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .task-icon.pending {
+            background: #6c757d;
+        }
+
+        .task-icon.working {
+            background: #ffc107;
+        }
+
+        .task-icon.completed {
+            background: #28a745;
+        }
+
+        .agent-output {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .agent-output.visible {
+            display: block;
+        }
+
+        .collaboration-flow {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .flow-step.active {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+        }
+
+        .flow-step.completed {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+        }
+
+        .step-number {
+            background: #4a90e2;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .step-number.completed {
+            background: #4caf50;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 4px;
+        }
+
+        .step-desc {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .questions-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-item {
+            background: #f8f9fa;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .question-role {
+            font-weight: bold;
+            color: #17a2b8;
+            font-size: 12px;
+        }
+
+        .question-priority {
+            background: #dc3545;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            margin-left: 10px;
+        }
+
+        .question-priority.medium {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .question-priority.low {
+            background: #28a745;
+        }
+
+        .question-text {
+            color: #495057;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #e3f2fd;
+            border-top: 3px solid #4a90e2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .logo-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .agent-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-section">
+                <div class="company-logo">🔆 Company 1</div>
+                <div class="company-logo">🏛️ Company 2</div>
+            </div>
+            <h1>Agentic RFP Scanner</h1>
+            <p class="subtitle">AI Agent Orchestration & Dynamic Role Assignment</p>
+        </div>
+
+        <div class="main-content">
+            <div class="upload-section">
+                <h2 class="section-header">📤 Document Upload</h2>
+                
+                <div class="company-selector">
+                    <p><strong>🏢 Select company for analysis:</strong></p>
+                    <div class="company-buttons">
+                        <button class="company-btn orange active" data-company="orange">
+                            🔆 Company BV<br>
+                            <small style="font-size: 10px; opacity: 0.8;">Circular & Fast</small>
+                        </button>
+                        <button class="company-btn eclatec" data-company="eclatec">
+                            🏛️ Company2<br>
+                            <small style="font-size: 10px; opacity: 0.8;">Design & Smart City</small>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="upload-types">
+                    <button class="upload-type rfp active" data-type="rfp">📄 RFP Document</button>
+                    <button class="upload-type reference" data-type="reference">📚 Reference Docs</button>
+                </div>
+                
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📤</div>
+                    <h3 id="uploadTitle">Upload RFP Document</h3>
+                    <p id="uploadDesc">Drag files here or click to select</p>
+                    <p style="font-size: 0.9em; color: #666; margin-top: 8px;">
+                        PDF, DOC, DOCX, TXT - Max 100MB
+                    </p>
+                </div>
+                <input type="file" id="fileInput" style="display: none;" accept=".pdf,.doc,.docx,.txt,.md" multiple>
+                
+                <button class="analyze-btn" id="analyzeBtn" disabled>🤖 Initiate Agent Analysis</button>
+            </div>
+
+            <div class="agent-orchestration">
+                <h2 class="section-header">🎭 Agent Orchestration</h2>
+                
+                <div class="agent-preview" id="agentPreview">
+                    <div style="font-size: 48px; margin-bottom: 15px;">🎭</div>
+                    <p><strong>Agents are waiting for documents</strong></p>
+                    <p style="font-size: 13px; margin-top: 10px; color: #666;">
+                        Upload RFP documents to automatically deploy the right AI agents
+                    </p>
+                    <div style="margin-top: 15px; font-size: 12px; color: #666;">
+                        <strong>Available Agent Roles:</strong><br>
+                        🎯 Bid Manager • ⚖️ Legal Analyst • 🔬 Product Specialist<br>
+                        📊 Risk Assessor • 💰 Financial Analyst • 🤔 Critical Thinker
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="agents-container" id="agentsContainer">
+            <h2 class="section-header">🤖 Active AI Agents</h2>
+            
+            <div class="collaboration-flow">
+                <h3 style="color: #1e3c72; margin-bottom: 15px; font-size: 16px;">🔄 Agent Collaboration Flow</h3>
+                <div id="collaborationSteps"></div>
+            </div>
+
+            <div class="agent-grid" id="agentGrid"></div>
+
+            <div class="questions-panel">
+                <h3 style="color: #1e3c72; margin-bottom: 15px; font-size: 16px;">❓ Critical Questions from Agents</h3>
+                <div id="questionsContainer"></div>
+            </div>
+
+            <div class="proposal-generation" id="proposalGeneration" style="display: none;">
+                <h3 style="color: #1e3c72; margin-bottom: 15px; font-size: 16px;">✍️ Proposal Document Generation</h3>
+                <div style="background: white; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
+                    <div id="proposalStatus" style="text-align: center; padding: 20px;">
+                        <div style="font-size: 48px; margin-bottom: 15px;">📝</div>
+                        <p><strong>Bid Manager is synthesizing all agent insights...</strong></p>
+                        <div class="loading" style="margin-top: 15px;">
+                            <div class="spinner"></div>
+                            <span>Generating comprehensive proposal document</span>
+                        </div>
+                    </div>
+                    <button id="generateProposalBtn" class="analyze-btn" style="margin-top: 20px; display: none;">
+                        📄 Generate Full Proposal Document
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for Full Proposal Document -->
+        <div class="modal" id="proposalModal">
+            <div class="modal-content" style="max-width: 90%; max-height: 90%;">
+                <div class="modal-header">
+                    <h3 id="proposalModalTitle">📄 Complete RFP Proposal Document</h3>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button id="downloadProposal" style="background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 15px; cursor: pointer; font-size: 12px;">
+                            💾 Download Word
+                        </button>
+                        <button class="modal-close" onclick="closeProposalModal()">&times;</button>
+                    </div>
+                </div>
+                <div id="proposalContent" style="font-family: 'Times New Roman', serif; line-height: 1.6; max-height: 70vh; overflow-y: auto; padding: 20px; background: white; border-radius: 10px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .modal-close {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .proposal-section {
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+        }
+
+        .proposal-section h1 {
+            color: #1e3c72;
+            border-bottom: 3px solid #4a90e2;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .proposal-section h2 {
+            color: #2a5298;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .proposal-section h3 {
+            color: #4a90e2;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f8fafc 100%);
+            border-left: 4px solid #4a90e2;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .win-theme {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f9f0 100%);
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .technical-spec {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+
+        .proposal-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .proposal-table th,
+        .proposal-table td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .proposal-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #1e3c72;
+        }
+    </style>
+
+    <script>
+        // Global state
+        let selectedCompany = 'orange';
+        let selectedUploadType = 'rfp';
+        let uploadedFiles = {
+            rfp: [],
+            reference: []
+        };
+        let activeAgents = [];
+        let collaborationSteps = [];
+        let agentQuestions = [];
+
+        // Agent roles and their capabilities
+        const AGENT_ROLES = {
+            bidManager: {
+                name: 'Bid Manager',
+                icon: '🎯',
+                expertise: 'RFP strategy, win themes, proposal structure',
+                triggers: ['rfp', 'tender', 'aanbesteding', 'offerte'],
+                priority: 1,
+                tasks: ['Analyze RFP structure', 'Identify win themes', 'Develop response strategy', 'Coordinate agent activities'],
+                color: '#1976d2'
+            },
+            legalAnalyst: {
+                name: 'Legal Analyst',
+                icon: '⚖️',
+                expertise: 'Contract terms, compliance, legal risks',
+                triggers: ['contract', 'juridisch', 'voorwaarden', 'aansprakelijkheid', 'penalty', 'boete'],
+                priority: 2,
+                tasks: ['Review legal terms', 'Identify compliance requirements', 'Assess contract risks', 'Flag problematic clauses'],
+                color: '#d32f2f'
+            },
+            productSpecialist: {
+                name: 'Product Specialist',
+                icon: '🔬',
+                expertise: 'Technical specs, product matching, capabilities',
+                triggers: ['technisch', 'specificatie', 'LED', 'lumen', 'watt', 'IP65', 'certificering'],
+                priority: 1,
+                tasks: ['Analyze technical requirements', 'Match product capabilities', 'Identify spec gaps', 'Recommend solutions'],
+                color: '#388e3c'
+            },
+            riskAssessor: {
+                name: 'Risk Assessor',
+                icon: '📊',
+                expertise: 'Project risks, timeline analysis, resource assessment',
+                triggers: ['planning', 'risico', 'deadline', 'levertijd', 'planning', 'resources'],
+                priority: 2,
+                tasks: ['Identify project risks', 'Assess timeline feasibility', 'Evaluate resource needs', 'Propose mitigation strategies'],
+                color: '#f57c00'
+            },
+            financialAnalyst: {
+                name: 'Financial Analyst',
+                icon: '💰',
+                expertise: 'Cost analysis, pricing strategy, profitability',
+                triggers: ['prijs', 'kosten', 'budget', 'financieel', 'rendement', 'marge'],
+                priority: 1,
+                tasks: ['Analyze cost requirements', 'Develop pricing strategy', 'Calculate profitability', 'Identify financial risks'],
+                color: '#7b1fa2'
+            },
+            criticalThinker: {
+                name: 'Critical Thinker',
+                icon: '🤔',
+                expertise: 'Asks probing questions, identifies assumptions, challenges thinking',
+                triggers: ['assumption', 'vraag', 'unclear', 'missing', 'inconsistent'],
+                priority: 3,
+                tasks: ['Question assumptions', 'Identify information gaps', 'Challenge proposals', 'Ensure thorough analysis'],
+                color: '#455a64'
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const agentPreview = document.getElementById('agentPreview');
+            const agentsContainer = document.getElementById('agentsContainer');
+            const companyButtons = document.querySelectorAll('.company-btn');
+            const uploadTypes = document.querySelectorAll('.upload-type');
+            const uploadTitle = document.getElementById('uploadTitle');
+            const uploadDesc = document.getElementById('uploadDesc');
+
+            // Event listeners
+            companyButtons.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    companyButtons.forEach(function(b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
+                    selectedCompany = btn.getAttribute('data-company');
+                    updateAgentPreview();
+                });
+            });
+
+            uploadTypes.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    uploadTypes.forEach(function(b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
+                    selectedUploadType = btn.getAttribute('data-type');
+                    updateUploadArea();
+                });
+            });
+
+            uploadArea.addEventListener('click', function() { fileInput.click(); });
+            uploadArea.addEventListener('dragover', handleDragOver);
+            uploadArea.addEventListener('dragleave', handleDragLeave);
+            uploadArea.addEventListener('drop', handleDrop);
+            fileInput.addEventListener('change', handleFileSelect);
+            analyzeBtn.addEventListener('click', initiateAgentAnalysis);
+
+            function updateUploadArea() {
+                if (selectedUploadType === 'rfp') {
+                    uploadTitle.textContent = 'Upload RFP Document';
+                    uploadDesc.textContent = 'Drag RFP here or click to select';
+                } else {
+                    uploadTitle.textContent = 'Upload Reference Documents';
+                    uploadDesc.textContent = 'Brochures, quotes, whitepapers, etc.';
+                }
+            }
+
+            function handleDragOver(e) {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            }
+
+            function handleDragLeave(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            }
+
+            function handleDrop(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileSelect({ target: { files: files } });
+                }
+            }
+
+            function handleFileSelect(e) {
+                const files = Array.from(e.target.files);
+                files.forEach(function(file) {
+                    addFileToLibrary(file, selectedUploadType);
+                });
+                
+                updateAgentPreview();
+                analyzeBtn.disabled = false;
+            }
+
+            function addFileToLibrary(file, type) {
+                const fileObj = {
+                    id: Date.now() + Math.random(),
+                    name: file.name,
+                    size: file.size,
+                    type: type,
+                    file: file,
+                    uploaded: new Date().toLocaleTimeString(),
+                    content: generateMockFileContent(file.name, type) // Mock content analysis
+                };
+                uploadedFiles[type].push(fileObj);
+            }
+
+            function generateMockFileContent(filename, type) {
+                // Mock content analysis based on file type and name
+                if (type === 'rfp') {
+                    return {
+                        keywords: ['LED lighting', 'public lighting', 'EMVI criteria', 'sustainability', '5-year warranty', 'IP65', 'DALI dimming', '12-week delivery time', 'circularity', 'liability'],
+                        complexity: 'high',
+                        legalTerms: ['terms and conditions', 'liability', 'penalty clauses', 'warranty obligations'],
+                        technicalSpecs: ['4000K color temperature', '60W max power consumption', '>50,000 burning hours', 'CE certification'],
+                        risks: ['tight deadline', 'penalty clauses', 'complex installation requirements']
+                    };
+                } else {
+                    return {
+                        keywords: ['company profile', 'references', 'quality certificates', 'technical specifications'],
+                        complexity: 'medium',
+                        capabilities: ['LED expertise', 'fast delivery', 'quality certification'],
+                        strengths: selectedCompany === 'orange' ? ['circularity', 'fast delivery'] : ['design', 'smart city']
+                    };
+                }
+            }
+        }
+
+        function updateAgentPreview() {
+            const agentPreview = document.getElementById('agentPreview');
+            const totalFiles = uploadedFiles.rfp.length + uploadedFiles.reference.length;
+            
+            if (totalFiles === 0) {
+                agentPreview.className = 'agent-preview';
+                agentPreview.innerHTML = 
+                    '<div style="font-size: 48px; margin-bottom: 15px;">🎭</div>' +
+                    '<p><strong>Agents Waiting for Documents</strong></p>' +
+                    '<p style="font-size: 13px; margin-top: 10px; color: #666;">' +
+                        'Upload RFP documents to automatically deploy the right AI agents' +
+                    '</p>' +
+                    '<div style="margin-top: 15px; font-size: 12px; color: #666;">' +
+                        '<strong>Available Agent Roles:</strong><br>' +
+                        '🎯 Bid Manager • ⚖️ Legal Analyst • 🔬 Product Specialist<br>' +
+                        '📊 Risk Assessor • 💰 Financial Analyst • 🤔 Critical Thinker' +
+                    '</div>';
+            } else {
+                const requiredAgents = determineRequiredAgents();
+                agentPreview.className = 'agent-preview active';
+                agentPreview.innerHTML = 
+                    '<div style="font-size: 36px; margin-bottom: 15px;">🤖</div>' +
+                    '<p><strong>' + requiredAgents.length + ' AI Agents Identified</strong></p>' +
+                    '<p style="font-size: 13px; margin-top: 10px; color: #666;">' +
+                        'Based on ' + totalFiles + ' uploaded document(s)' +
+                    '</p>' +
+                    '<div style="margin-top: 15px; font-size: 12px;">' +
+                        requiredAgents.map(agent => 
+                            '<span style="background: ' + AGENT_ROLES[agent].color + '; color: white; padding: 4px 8px; border-radius: 12px; margin: 2px; display: inline-block;">' +
+                            AGENT_ROLES[agent].icon + ' ' + AGENT_ROLES[agent].name +
+                            '</span>'
+                        ).join('') +
+                    '</div>';
+            }
+        }
+
+        function determineRequiredAgents() {
+            const allContent = [];
+            
+            // Collect all file content for analysis
+            Object.keys(uploadedFiles).forEach(type => {
+                uploadedFiles[type].forEach(file => {
+                    allContent.push(...file.content.keywords);
+                    if (file.content.legalTerms) {
+                        allContent.push(...file.content.legalTerms);
+                    }
+                    if (file.content.technicalSpecs) {
+                        allContent.push(...file.content.technicalSpecs);
+                    }
+                    if (file.content.risks) {
+                        allContent.push(...file.content.risks);
+                    }
+                });
+            });
+
+            const contentText = allContent.join(' ').toLowerCase();
+            const requiredAgents = [];
+
+            // Determine which agents are needed based on content analysis
+            Object.keys(AGENT_ROLES).forEach(agentKey => {
+                const agent = AGENT_ROLES[agentKey];
+                const isTriggered = agent.triggers.some(trigger => 
+                    contentText.includes(trigger.toLowerCase())
+                );
+                
+                if (isTriggered) {
+                    requiredAgents.push(agentKey);
+                }
+            });
+
+            // Always include bid manager for RFP documents
+            if (uploadedFiles.rfp.length > 0 && !requiredAgents.includes('bidManager')) {
+                requiredAgents.unshift('bidManager');
+            }
+
+            // Always include critical thinker as a final check
+            if (!requiredAgents.includes('criticalThinker')) {
+                requiredAgents.push('criticalThinker');
+            }
+
+            // Sort by priority
+            requiredAgents.sort((a, b) => AGENT_ROLES[a].priority - AGENT_ROLES[b].priority);
+
+            return requiredAgents;
+        }
+
+        function initiateAgentAnalysis() {
+            if (uploadedFiles.rfp.length === 0 && uploadedFiles.reference.length === 0) return;
+
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const agentsContainer = document.getElementById('agentsContainer');
+
+            // Show loading state
+            analyzeBtn.innerHTML = '<div class="loading"><div class="spinner"></div>Initializing Agents...</div>';
+            analyzeBtn.disabled = true;
+
+            // Initialize agents and collaboration flow
+            setTimeout(function() {
+                initializeAgents();
+                setupCollaborationFlow();
+                agentsContainer.classList.add('visible');
+                agentsContainer.scrollIntoView({ behavior: 'smooth' });
+
+                // Start agent execution
+                executeAgentWorkflow();
+
+                // Reset button
+                analyzeBtn.innerHTML = '🤖 Agents Active - Reanalyze';
+                analyzeBtn.disabled = false;
+            }, 2000);
+        }
+
+        function initializeAgents() {
+            const requiredAgents = determineRequiredAgents();
+            activeAgents = requiredAgents.map(agentKey => ({
+                id: agentKey,
+                ...AGENT_ROLES[agentKey],
+                status: 'assigned',
+                progress: 0,
+                output: '',
+                completedTasks: [],
+                questions: []
+            }));
+
+            renderAgentGrid();
+        }
+
+        function setupCollaborationFlow() {
+            collaborationSteps = [
+                {
+                    id: 1,
+                    title: 'Document Analysis',
+                    description: 'Agents analyze uploaded documents for relevant content',
+                    agents: ['bidManager', 'legalAnalyst', 'productSpecialist'],
+                    status: 'active',
+                    duration: '30-60 seconds'
+                },
+                {
+                    id: 2,
+                    title: 'Risk & Financial Assessment',
+                    description: 'Specialized agents evaluate risks and financial implications',
+                    agents: ['riskAssessor', 'financialAnalyst'],
+                    status: 'pending',
+                    duration: '45-90 seconds'
+                },
+                {
+                    id: 3,
+                    title: 'Critical Review',
+                    description: 'Critical thinker challenges assumptions and identifies gaps',
+                    agents: ['criticalThinker'],
+                    status: 'pending',
+                    duration: '30-45 seconds'
+                },
+                {
+                    id: 4,
+                    title: 'Synthesis & Proposal Writing',
+                    description: 'Bid manager synthesizes insights and writes complete proposal document',
+                    agents: ['bidManager'],
+                    status: 'pending',
+                    duration: '120-180 seconds'
+                }
+            ];
+
+            renderCollaborationFlow();
+        }
+
+        function renderCollaborationFlow() {
+            const container = document.getElementById('collaborationSteps');
+            container.innerHTML = collaborationSteps.map(step => 
+                '<div class="flow-step ' + step.status + '">' +
+                    '<div class="step-number ' + (step.status === 'completed' ? 'completed' : '') + '">' + step.id + '</div>' +
+                    '<div class="step-content">' +
+                        '<div class="step-title">' + step.title + '</div>' +
+                        '<div class="step-desc">' + step.description + ' (' + step.duration + ')</div>' +
+                    '</div>' +
+                '</div>'
+            ).join('');
+        }
+
+        function renderAgentGrid() {
+            const container = document.getElementById('agentGrid');
+            container.innerHTML = activeAgents.map(agent => 
+                '<div class="agent-card ' + agent.status + (agent.id === 'legalAnalyst' || agent.id === 'criticalThinker' ? ' critical' : '') + '" id="agent-' + agent.id + '">' +
+                    '<div class="agent-header">' +
+                        '<div>' +
+                            '<div class="agent-role">' + agent.icon + ' ' + agent.name + '</div>' +
+                            '<div class="agent-expertise">' + agent.expertise + '</div>' +
+                        '</div>' +
+                        '<div class="agent-status ' + agent.status + '">' + agent.status + '</div>' +
+                    '</div>' +
+                    '<ul class="agent-tasks">' +
+                        agent.tasks.map((task, index) => 
+                            '<li>' +
+                                '<div class="task-icon pending">⏳</div>' +
+                                task +
+                            '</li>'
+                        ).join('') +
+                    '</ul>' +
+                    '<div class="agent-output" id="output-' + agent.id + '"></div>' +
+                '</div>'
+            ).join('');
+        }
+
+        function executeAgentWorkflow() {
+            let currentStep = 0;
+            
+            function executeStep() {
+                if (currentStep >= collaborationSteps.length) return;
+
+                const step = collaborationSteps[currentStep];
+                step.status = 'active';
+                renderCollaborationFlow();
+
+                // Execute agents in this step
+                step.agents.forEach((agentId, index) => {
+                    const agent = activeAgents.find(a => a.id === agentId);
+                    if (agent) {
+                        setTimeout(() => {
+                            executeAgent(agent);
+                        }, index * 1000); // Stagger agent execution
+                    }
+                });
+
+                // Move to next step after all agents complete
+                setTimeout(() => {
+                    step.status = 'completed';
+                    renderCollaborationFlow();
+                    currentStep++;
+                    if (currentStep < collaborationSteps.length) {
+                        executeStep();
+                    }
+                }, step.agents.length * 2000 + 1000);
+            }
+
+            executeStep();
+        }
+
+        function executeAgent(agent) {
+            // Update agent status to working
+            agent.status = 'working';
+            updateAgentCard(agent);
+
+            // Simulate agent work with progressive task completion
+            let taskIndex = 0;
+            const taskInterval = setInterval(() => {
+                if (taskIndex < agent.tasks.length) {
+                    // Mark task as completed
+                    const taskElement = document.querySelector(`#agent-${agent.id} .agent-tasks li:nth-child(${taskIndex + 1}) .task-icon`);
+                    taskElement.className = 'task-icon working';
+                    taskElement.textContent = '⚙️';
+                    
+                    setTimeout(() => {
+                        taskElement.className = 'task-icon completed';
+                        taskElement.textContent = '✓';
+                    }, 1000);
+                    
+                    taskIndex++;
+                } else {
+                    clearInterval(taskInterval);
+                    completeAgent(agent);
+                }
+            }, 1500);
+        }
+
+        function completeAgent(agent) {
+            agent.status = 'completed';
+            agent.output = generateAgentOutput(agent);
+            agent.questions = generateAgentQuestions(agent);
+            
+            updateAgentCard(agent);
+            displayAgentOutput(agent);
+            addAgentQuestions(agent);
+
+            // Check if all agents are completed for proposal generation
+            checkForProposalGeneration();
+        }
+
+        function checkForProposalGeneration() {
+            const allCompleted = activeAgents.every(agent => agent.status === 'completed');
+            const bidManagerCompleted = activeAgents.find(agent => agent.id === 'bidManager' && agent.status === 'completed');
+            
+            if (allCompleted && bidManagerCompleted) {
+                // Wait a moment then show proposal generation
+                setTimeout(() => {
+                    showProposalGeneration();
+                }, 2000);
+            }
+        }
+
+        function showProposalGeneration() {
+            const proposalSection = document.getElementById('proposalGeneration');
+            const proposalStatus = document.getElementById('proposalStatus');
+            const generateBtn = document.getElementById('generateProposalBtn');
+            
+            proposalSection.style.display = 'block';
+            
+            // Simulate proposal writing process
+            setTimeout(() => {
+                proposalStatus.innerHTML = 
+                    '<div style="font-size: 48px; margin-bottom: 15px;">✅</div>' +
+                    '<p><strong>All agent insights have been synthesized!</strong></p>' +
+                    '<p style="font-size: 14px; color: #666; margin-top: 10px;">' +
+                        'Bid Manager is ready to generate a complete, professional proposal document' +
+                    '</p>';
+                
+                generateBtn.style.display = 'block';
+                generateBtn.addEventListener('click', generateFullProposal);
+            }, 3000);
+        }
+
+        function updateAgentCard(agent) {
+            const card = document.getElementById(`agent-${agent.id}`);
+            card.className = `agent-card ${agent.status}` + (agent.id === 'legalAnalyst' || agent.id === 'criticalThinker' ? ' critical' : '');
+            
+            const statusElement = card.querySelector('.agent-status');
+            statusElement.className = `agent-status ${agent.status}`;
+            statusElement.textContent = agent.status;
+        }
+
+        function displayAgentOutput(agent) {
+            const outputElement = document.getElementById(`output-${agent.id}`);
+            outputElement.innerHTML = agent.output;
+            outputElement.classList.add('visible');
+        }
+
+        function generateAgentOutput(agent) {
+            const company = selectedCompany === 'orange' ? 'Company1' : 'Company2';
+            
+            switch(agent.id) {
+                case 'bidManager':
+                    return `<strong>🎯 BID STRATEGY ANALYSIS</strong>
+
+Key Win Themes Identified:
+• ${selectedCompany === 'orange' ? 'Fast delivery (2-4 weeks) vs standard 12 weeks' : 'Premium design & smart city innovation'}
+• ${selectedCompany === 'orange' ? 'Circular sustainability (95% reusable)' : 'Heritage lighting expertise'}
+• Dutch production/assembly advantage
+
+EMVI Scoring Strategy:
+• Sustainability: Focus on ${selectedCompany === 'orange' ? 'circularity & local production' : 'Dark Sky compliance & energy efficiency'}
+• Innovation: ${selectedCompany === 'orange' ? 'Rapid implementation of new techniques' : 'IoT integration & adaptive lighting'}
+
+Recommended Response Structure:
+1. Executive summary with win themes
+2. Technical compliance (meeting all specs)
+3. Added value section
+4. Implementation plan with milestones
+5. Guarantees & service level
+
+Win Probability: ${selectedCompany === 'orange' ? '78%' : '82%'}`;
+
+                case 'legalAnalyst':
+                    return `<strong>⚖️ LEGAL RISK ASSESSMENT</strong>
+
+Contract Analysis:
+• Liability: Standard limitation possible
+• Warranty period: 5 years required - within company standard
+• Penalty clauses: 0.5% per day delay (moderate risk)
+• Intellectual property: No special provisions
+
+Critical Legal Points:
+⚠️ Penalty clause for delay (max €50K)
+⚠️ Performance guarantees for 50,000+ burning hours
+✅ Standard liability limitation acceptable
+✅ No unusual legal requirements
+
+Compliance Requirements:
+• CE certification (✅ in portfolio)
+• ISO 9001 quality system (✅ available)
+• GDPR compliance for IoT components
+• Dutch service obligation
+
+Recommendation: Acceptable risk profile, standard terms and conditions apply.`;
+
+                case 'productSpecialist':
+                    return `<strong>🔬 TECHNICAL CAPABILITY ANALYSIS</strong>
+
+Product Match Analysis:
+✅ LED technology: 100% portfolio compliance
+✅ Luminous flux 4,000-6,000 lumens: Standard range
+✅ 4,000K color temperature: Within specification
+✅ >50,000 burning hours: L80B10 guaranteed
+✅ IP65 protection: Standard in all fixtures
+✅ DALI dimming: Fully compatible
+
+${selectedCompany === 'orange' ? 
+`Orange Lighting Specific Advantages:
+• Circular fixtures (95% reusable materials)
+• Fast delivery from Dutch stock
+• Modular design for easy repair
+• ISO 14001 environmental management system` :
+`Eclatec Specific Advantages:
+• Heritage design expertise for historical context
+• Smart sensors integration (traffic, air quality)
+• Adaptive lighting control algorithms
+• Dark Sky certified solutions`}
+
+Technical Gaps: No significant gaps identified
+Recommended Products: ${selectedCompany === 'orange' ? 'OL-LED-6000 series with DALI' : 'ECL-Heritage-Smart series'}`;
+
+                case 'riskAssessor':
+                    return `<strong>📊 PROJECT RISK ANALYSIS</strong>
+
+Timeline Assessment:
+• Project duration: 12 weeks (TIGHT but feasible)
+• ${selectedCompany === 'orange' ? 'Delivery time: 2-4 weeks (ADVANTAGE)' : 'Delivery time: 6-8 weeks (within deadline)'}
+• Installation: 6-8 weeks (weather dependent)
+
+High Risk Factors:
+🔴 Tight deadline (12 weeks total)
+🔴 Weather-dependent outdoor installation
+🔴 Coordination with municipality/road authorities
+
+Medium Risk Factors:
+🟡 Availability of qualified installers
+🟡 Possible archaeological investigation for excavation work
+🟡 Delivery reliability during peak season
+
+Risk Mitigation Strategies:
+• ${selectedCompany === 'orange' ? 'Utilize stock advantage for quick start' : 'Early material ordering and pre-assembly'}
+• Parallel engineering and production planning
+• Weather contingency in schedule (15% buffer)
+• Backup supplier agreements for critical components
+
+Overall Risk Level: MEDIUM (manageable with appropriate measures)`;
+
+                case 'financialAnalyst':
+                    return `<strong>💰 FINANCIAL ANALYSIS</strong>
+
+Project Value Assessment:
+• Estimated project value: €180,000 - €220,000
+• Target margin: ${selectedCompany === 'orange' ? '18-22%' : '22-28%'}
+• Break-even: €${selectedCompany === 'orange' ? '156,000' : '165,000'}
+
+Cost Structure Analysis:
+• Materials: 60-65% of total costs
+• Installation: 20-25% of total costs
+• Project management: 8-12% of total costs
+• Overhead & profit: ${selectedCompany === 'orange' ? '18-22%' : '22-28%'}
+
+Pricing Strategy:
+${selectedCompany === 'orange' ? 
+'• Competitive pricing with fast delivery as differentiator\n• Focus on total cost of ownership (TCO)\n• Circularity as added value pricing' :
+'• Premium pricing justified by design & smart features\n• Long-term value proposition\n• Innovation premium for IoT capabilities'}
+
+Cash Flow Impact:
+• Upfront investment: €${selectedCompany === 'orange' ? '45,000' : '52,000'}
+• Payment terms: 30% upfront, 40% upon delivery, 30% after completion
+• Working capital requirement: €28,000-32,000
+
+Profitability Forecast: ${selectedCompany === 'orange' ? '€32,000-38,000 gross profit' : '€41,000-52,000 gross profit'}`;
+
+                case 'criticalThinker':
+                    return `<strong>🤔 CRITICAL ANALYSIS & QUESTIONS</strong>
+
+Assumptions That Need Validation:
+❓ Are we certain about the 12-week timeline feasibility?
+❓ Do we have confirmed availability of key installation resources?
+❓ Has the penalty clause risk been fully quantified?
+❓ Are our technical specs truly meeting ALL unstated requirements?
+
+Information Gaps Identified:
+• Exact installation locations and accessibility
+• Existing infrastructure condition assessment
+• Municipality's aesthetic preferences/restrictions  
+• Potential for change orders during execution
+• Competition analysis - who else is bidding?
+
+Strategic Questions for Team:
+1. Why should the customer choose us over the lowest bidder?
+2. What happens if we encounter unexpected site conditions?
+3. Do we have a clear escalation path for technical issues?
+4. Are our warranty terms competitive with market expectations?
+5. How do we demonstrate ROI beyond initial price?
+
+Red Flags to Address:
+⚠️ No mention of existing infrastructure assessment
+⚠️ Unclear on municipal approval processes required
+⚠️ Tight timeline with penalty clauses = high risk combo
+⚠️ No information about incumbent supplier advantages
+
+Recommendations for Proposal:
+• Include detailed risk register with mitigation plans
+• Propose phased implementation to reduce risk
+• Offer extended warranty as differentiator
+• Include post-installation support/monitoring services`;
+
+                default:
+                    return `<strong>Agent ${agent.name} Analysis Complete</strong>\n\nDetailed analysis and recommendations would appear here based on the specific role and uploaded documents.`;
+            }
+        }
+
+        function generateAgentQuestions(agent) {
+            switch(agent.id) {
+                case 'bidManager':
+                    return [
+                        {
+                            priority: 'high',
+                            text: 'Who are our main competitors for this project and what is their likely approach?',
+                            category: 'competitive-intelligence'
+                        },
+                        {
+                            priority: 'medium',
+                            text: 'Can we organize a site visit to better assess the complexity of the installation?',
+                            category: 'project-planning'
+                        }
+                    ];
+
+                case 'legalAnalyst':
+                    return [
+                        {
+                            priority: 'high',
+                            text: 'Is the penalty clause of 0.5% per day delay negotiable? This seems high for this type of project.',
+                            category: 'contract-terms'
+                        },
+                        {
+                            priority: 'medium',
+                            text: 'Have there been previous cases where the municipality of Lelystad enforced penalty clauses?',
+                            category: 'legal-precedent'
+                        }
+                    ];
+
+                case 'productSpecialist':
+                    return [
+                        {
+                            priority: 'medium',
+                            text: 'Are there specific lighting plan requirements not explicitly stated in the RFP but still expected?',
+                            category: 'technical-requirements'
+                        },
+                        {
+                            priority: 'low',
+                            text: 'Should we account for future smart city expansions in our design?',
+                            category: 'future-proofing'
+                        }
+                    ];
+
+                case 'riskAssessor':
+                    return [
+                        {
+                            priority: 'high',
+                            text: 'What is our backup plan if the main supplier for LED modules fails during the project?',
+                            category: 'supply-chain-risk'
+                        },
+                        {
+                            priority: 'high',
+                            text: 'Do we have enough certified installers available for the planned implementation period?',
+                            category: 'resource-availability'
+                        }
+                    ];
+
+                case 'financialAnalyst':
+                    return [
+                        {
+                            priority: 'high',
+                            text: 'How will potential material price increases affect our margin during the 12-week implementation?',
+                            category: 'cost-volatility'
+                        },
+                        {
+                            priority: 'medium',
+                            text: 'Can we negotiate better payment terms to reduce working capital risk?',
+                            category: 'cash-flow'
+                        }
+                    ];
+
+                case 'criticalThinker':
+                    return [
+                        {
+                            priority: 'high',
+                            text: 'Why did the municipality choose these specific LED specifications? Is there a hidden agenda or preference?',
+                            category: 'strategic-insight'
+                        },
+                        {
+                            priority: 'high',
+                            text: 'What are the real criteria that will determine the decision - price, quality, or other factors?',
+                            category: 'decision-criteria'
+                        },
+                        {
+                            priority: 'medium',
+                            text: 'Are we being too optimistic about our chances of winning? What weakness does our approach have?',
+                            category: 'assumption-challenge'
+                        }
+                    ];
+
+                default:
+                    return [];
+            }
+        }
+
+        function addAgentQuestions(agent) {
+            const container = document.getElementById('questionsContainer');
+            
+            agent.questions.forEach(question => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-item';
+                questionDiv.innerHTML = 
+                    '<div class="question-header">' +
+                        '<span class="question-role">' + agent.icon + ' ' + agent.name + '</span>' +
+                        '<span class="question-priority ' + question.priority + '">' + question.priority.toUpperCase() + '</span>' +
+                    '</div>' +
+                    '<div class="question-text">' + question.text + '</div>';
+                
+                container.appendChild(questionDiv);
+            });
+
+            // Update questions container visibility
+            if (container.children.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #666; font-style: italic;">Agents are still working...</p>';
+            }
+        }
+
+        // Initialize the app
+        updateAgentPreview();
+    </script>
+</body>
+</html>
