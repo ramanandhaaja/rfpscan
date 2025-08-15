@@ -1,4 +1,9 @@
 declare module 'html2pdf.js' {
-  const html2pdf: any;
-  export default html2pdf;
+  interface Html2PdfInstance {
+    from: (source: HTMLElement | string) => Html2PdfInstance;
+    set: (options: unknown) => Html2PdfInstance;
+    save: () => Promise<void>;
+  }
+
+  export default function html2pdf(): Html2PdfInstance;
 }
