@@ -27,7 +27,7 @@ export interface UploadedFile {
   contentBase64?: string;
 }
 
-export type Company = 'orange' | 'eclatec';
+export type Company = 'orange' | 'kpn' | 'tmobile' | 'vodafone' | 'other' | 'eclatec';
 
 // Collection of uploaded files grouped by category
 export type UploadedFiles = {
