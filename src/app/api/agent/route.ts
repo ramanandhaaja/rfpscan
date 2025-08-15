@@ -228,9 +228,14 @@ Return STRICT JSON with keys: output_html (string), questions (array of {id:stri
       // Some models wrap JSON in code fences; strip gently
       const text = typeof ai.content === 'string'
         ? ai.content
-        : (Array.isArray(ai.content)
-            ? ai.content.map((c: { text?: string }) => c?.text ?? '').join('\n')
-            : '');
+        : Array.isArray(ai.content)
+          ? ai.content
+              .map((c: unknown) => {
+                const part = c as { type?: string; text?: string };
+                return typeof part.text === 'string' ? part.text : '';
+              })
+              .join('\n')
+          : '';
       const cleaned = text.replace(/^```(json)?/i, '').replace(/```$/i, '').trim();
       parsed = JSON.parse(cleaned);
       //console.log(parsed);
